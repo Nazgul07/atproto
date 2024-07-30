@@ -64,7 +64,8 @@ export function validateLink(v: unknown): ValidationResult {
 
 /** Facet feature for a hashtag. The text usually includes a '#' prefix, but the facet reference should not (except in the case of 'double hash tags'). */
 export interface Tag {
-  tag: string
+  tag: string,
+  tagType: 'hashtag' | 'cashtag'
   [k: string]: unknown
 }
 

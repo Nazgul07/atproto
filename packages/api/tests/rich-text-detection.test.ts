@@ -223,56 +223,57 @@ describe('detectFacets', () => {
       string,
       string[],
       { byteStart: number; byteEnd: number }[],
+      'hashtag' | 'cashtag'
     ][] = [
-      ['#a', ['a'], [{ byteStart: 0, byteEnd: 2 }]],
+      ['#a', ['a'], [{ byteStart: 0, byteEnd: 2 }], 'hashtag'],
       [
         '#a #b',
         ['a', 'b'],
         [
           { byteStart: 0, byteEnd: 2 },
           { byteStart: 3, byteEnd: 5 },
-        ],
+        ], 'hashtag'
       ],
-      ['#1', [], []],
-      ['#1a', ['1a'], [{ byteStart: 0, byteEnd: 3 }]],
-      ['#tag', ['tag'], [{ byteStart: 0, byteEnd: 4 }]],
-      ['body #tag', ['tag'], [{ byteStart: 5, byteEnd: 9 }]],
-      ['#tag body', ['tag'], [{ byteStart: 0, byteEnd: 4 }]],
-      ['body #tag body', ['tag'], [{ byteStart: 5, byteEnd: 9 }]],
-      ['body #1', [], []],
-      ['body #1a', ['1a'], [{ byteStart: 5, byteEnd: 8 }]],
-      ['body #a1', ['a1'], [{ byteStart: 5, byteEnd: 8 }]],
-      ['#', [], []],
-      ['#?', [], []],
-      ['text #', [], []],
-      ['text # text', [], []],
+      ['#1', [], [], 'hashtag'],
+      ['#1a', ['1a'], [{ byteStart: 0, byteEnd: 3 }], 'hashtag'],
+      ['#tag', ['tag'], [{ byteStart: 0, byteEnd: 4 }], 'hashtag'],
+      ['body #tag', ['tag'], [{ byteStart: 5, byteEnd: 9 }], 'hashtag'],
+      ['#tag body', ['tag'], [{ byteStart: 0, byteEnd: 4 }], 'hashtag'],
+      ['body #tag body', ['tag'], [{ byteStart: 5, byteEnd: 9 }], 'hashtag'],
+      ['body #1', [], [], 'hashtag'],
+      ['body #1a', ['1a'], [{ byteStart: 5, byteEnd: 8 }], 'hashtag'],
+      ['body #a1', ['a1'], [{ byteStart: 5, byteEnd: 8 }], 'hashtag'],
+      ['#', [], [], 'hashtag'],
+      ['#?', [], [], 'hashtag'],
+      ['text #', [], [], 'hashtag'],
+      ['text # text', [], [], 'hashtag'],
       [
         'body #thisisa64characterstring_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
         ['thisisa64characterstring_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'],
-        [{ byteStart: 5, byteEnd: 70 }],
+        [{ byteStart: 5, byteEnd: 70 }], 'hashtag',
       ],
       [
         'body #thisisa65characterstring_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab',
         [],
-        [],
+        [], 'hashtag',
       ],
       [
         'body #thisisa64characterstring_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!',
         ['thisisa64characterstring_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'],
-        [{ byteStart: 5, byteEnd: 70 }],
+        [{ byteStart: 5, byteEnd: 70 }], 'hashtag',
       ],
       [
         'its a #double#rainbow',
         ['double#rainbow'],
-        [{ byteStart: 6, byteEnd: 21 }],
+        [{ byteStart: 6, byteEnd: 21 }], 'hashtag',
       ],
-      ['##hashash', ['#hashash'], [{ byteStart: 0, byteEnd: 9 }]],
-      ['##', [], []],
-      ['some #n0n3s@n5e!', ['n0n3s@n5e'], [{ byteStart: 5, byteEnd: 15 }]],
+      ['##hashash', ['#hashash'], [{ byteStart: 0, byteEnd: 9 }], 'hashtag'],
+      ['##', [], [], 'hashtag'],
+      ['some #n0n3s@n5e!', ['n0n3s@n5e'], [{ byteStart: 5, byteEnd: 15 }], 'hashtag'],
       [
         'works #with,punctuation',
         ['with,punctuation'],
-        [{ byteStart: 6, byteEnd: 23 }],
+        [{ byteStart: 6, byteEnd: 23 }], 'hashtag',
       ],
       [
         'strips trailing #punctuation, #like. #this!',
@@ -281,12 +282,12 @@ describe('detectFacets', () => {
           { byteStart: 16, byteEnd: 28 },
           { byteStart: 30, byteEnd: 35 },
           { byteStart: 37, byteEnd: 42 },
-        ],
+        ], 'hashtag',
       ],
       [
         'strips #multi_trailing___...',
         ['multi_trailing'],
-        [{ byteStart: 7, byteEnd: 22 }],
+        [{ byteStart: 7, byteEnd: 22 }], 'hashtag',
       ],
       [
         'works with #🦋 emoji, and #butter🦋fly',
@@ -294,7 +295,7 @@ describe('detectFacets', () => {
         [
           { byteStart: 11, byteEnd: 16 },
           { byteStart: 28, byteEnd: 42 },
-        ],
+        ], 'hashtag',
       ],
       [
         '#same #same #but #diff',
@@ -304,9 +305,9 @@ describe('detectFacets', () => {
           { byteStart: 6, byteEnd: 11 },
           { byteStart: 12, byteEnd: 16 },
           { byteStart: 17, byteEnd: 22 },
-        ],
+        ], 'hashtag',
       ],
-      ['this #️⃣tag should not be a tag', [], []],
+      ['this #️⃣tag should not be a tag', [], [], 'hashtag'],
       [
         'this ##️⃣tag should be a tag',
         ['#️⃣tag'],
@@ -315,7 +316,7 @@ describe('detectFacets', () => {
             byteStart: 5,
             byteEnd: 16,
           },
-        ],
+        ], 'hashtag',
       ],
       [
         'this #t\nag should be a tag',
@@ -325,45 +326,54 @@ describe('detectFacets', () => {
             byteStart: 5,
             byteEnd: 7,
           },
-        ],
+        ], 'hashtag',
       ],
-      ['no match (\\u200B): #​', [], []],
-      ['no match (\\u200Ba): #​a', [], []],
-      ['match (a\\u200Bb): #a​b', ['a'], [{ byteStart: 18, byteEnd: 20 }]],
-      ['match (ab\\u200B): #ab​', ['ab'], [{ byteStart: 18, byteEnd: 21 }]],
-      ['no match (\\u20e2tag): #⃢tag', [], []],
-      ['no match (a\\u20e2b): #a⃢b', ['a'], [{ byteStart: 21, byteEnd: 23 }]],
+      ['no match (\\u200B): #​', [], [], 'hashtag'],
+      ['no match (\\u200Ba): #​a', [], [], 'hashtag'],
+      ['match (a\\u200Bb): #a​b', ['a'], [{ byteStart: 18, byteEnd: 20 }], 'hashtag'],
+      ['match (ab\\u200B): #ab​', ['ab'], [{ byteStart: 18, byteEnd: 21 }], 'hashtag'],
+      ['no match (\\u20e2tag): #⃢tag', [], [], 'hashtag'],
+      ['no match (a\\u20e2b): #a⃢b', ['a'], [{ byteStart: 21, byteEnd: 23 }], 'hashtag'],
       [
         'match full width number sign (tag): ＃tag',
         ['tag'],
-        [{ byteStart: 36, byteEnd: 42 }],
+        [{ byteStart: 36, byteEnd: 42 }], 'hashtag',
       ],
       [
         'match full width number sign (tag): ＃#️⃣tag',
         ['#️⃣tag'],
-        [{ byteStart: 36, byteEnd: 49 }],
+        [{ byteStart: 36, byteEnd: 49 }], 'hashtag',
       ],
-      ['no match 1?: #1?', [], []],
+      ['no match 1?: #1?', [], [], 'hashtag'],
+      ['$1', [], [], 'cashtag'],
+      ['$AAPL', ['AAPL'], [{ byteStart: 0, byteEnd: 5 }], 'cashtag'],
+      ['$match cashtag', ['match'], [{ byteStart: 0, byteEnd: 6 }], 'cashtag'],
+      ['no match cashtag 1?: $1?', [], [], 'hashtag'],
     ]
 
-    it.each(inputs)('%s', async (input, tags, indices) => {
-      const rt = new RichText({ text: input })
+    it.each(inputs)('%s', async (input, tags, indices, tagType) => {
+      const rt = new RichText({ text: input}, {allowCashtags: true})
       await rt.detectFacets(agent)
 
       const detectedTags: string[] = []
+      const expectedTagTypes: string[] = []
+      const detectedTagTypes: string[] = []
       const detectedIndices: { byteStart: number; byteEnd: number }[] = []
 
       for (const { facet } of rt.segments()) {
         if (!facet) continue
         for (const feature of facet.features) {
           if (isTag(feature)) {
+            expectedTagTypes.push(tagType)
             detectedTags.push(feature.tag)
+            detectedTagTypes.push(feature.tagType)
           }
         }
         detectedIndices.push(facet.index)
       }
 
       expect(detectedTags).toEqual(tags)
+      expect(detectedTagTypes).toEqual(expectedTagTypes)
       expect(detectedIndices).toEqual(indices)
     })
   })

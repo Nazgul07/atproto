@@ -78,10 +78,10 @@ export function detectFacets(text: UnicodeString): Facet[] | undefined {
     const re = TAG_REGEX
     while ((match = re.exec(text.utf16))) {
       const leading = match[1]
-      let tag = match[2]
-
+      const tagType = match[2] === '$' ? 'cashtag' : 'hashtag'
+      let tag = match[3] 
       if (!tag) continue
-
+     
       // strip ending punctuation and any spaces
       tag = tag.trim().replace(TRAILING_PUNCTUATION_REGEX, '')
 
@@ -98,6 +98,7 @@ export function detectFacets(text: UnicodeString): Facet[] | undefined {
           {
             $type: 'app.bsky.richtext.facet#tag',
             tag: tag,
+            tagType: tagType
           },
         ],
       })
