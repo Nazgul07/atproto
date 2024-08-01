@@ -4341,6 +4341,9 @@ export const schemaDict = {
         description: 'A word that the account owner has muted.',
         required: ['value', 'targets'],
         properties: {
+          id: {
+            type: 'string',
+          },
           value: {
             type: 'string',
             description: 'The muted word itself.',
@@ -4354,6 +4357,19 @@ export const schemaDict = {
               type: 'ref',
               ref: 'lex:app.bsky.actor.defs#mutedWordTarget',
             },
+          },
+          actorTarget: {
+            type: 'string',
+            description:
+              'Groups of users to apply the muted word to. If undefined, applies to all users.',
+            knownValues: ['all', 'exclude-following'],
+            default: 'all',
+          },
+          expiresAt: {
+            type: 'string',
+            format: 'datetime',
+            description:
+              'The date and time at which the muted word will expire and no longer be applied.',
           },
         },
       },
@@ -5575,6 +5591,42 @@ export const schemaDict = {
           },
           termsOfService: {
             type: 'string',
+          },
+        },
+      },
+    },
+  },
+  AppBskyFeedDetach: {
+    lexicon: 1,
+    id: 'app.bsky.feed.detach',
+    defs: {
+      main: {
+        type: 'record',
+        key: 'tid',
+        description:
+          'Record defining post URIs detached from a root post. The record key (rkey) of the detach record must match the record key of the root post in question, and that record must be in the same repository.',
+        record: {
+          type: 'object',
+          required: ['post', 'targets', 'updatedAt'],
+          properties: {
+            post: {
+              type: 'string',
+              format: 'at-uri',
+              description: 'Reference (AT-URI) to the post record.',
+            },
+            targets: {
+              type: 'array',
+              maxLength: 50,
+              items: {
+                type: 'string',
+                format: 'at-uri',
+              },
+              description: 'List of detached post URIs.',
+            },
+            updatedAt: {
+              type: 'string',
+              format: 'datetime',
+            },
           },
         },
       },
@@ -11746,6 +11798,7 @@ export const ids = {
   AppBskyEmbedRecordWithMedia: 'app.bsky.embed.recordWithMedia',
   AppBskyFeedDefs: 'app.bsky.feed.defs',
   AppBskyFeedDescribeFeedGenerator: 'app.bsky.feed.describeFeedGenerator',
+  AppBskyFeedDetach: 'app.bsky.feed.detach',
   AppBskyFeedGenerator: 'app.bsky.feed.generator',
   AppBskyFeedGetActorFeeds: 'app.bsky.feed.getActorFeeds',
   AppBskyFeedGetActorLikes: 'app.bsky.feed.getActorLikes',
