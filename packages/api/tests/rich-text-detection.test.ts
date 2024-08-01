@@ -223,7 +223,7 @@ describe('detectFacets', () => {
       string,
       string[],
       { byteStart: number; byteEnd: number }[],
-      'hashtag' | 'cashtag'
+      'hashtag' | 'cashtag',
     ][] = [
       ['#a', ['a'], [{ byteStart: 0, byteEnd: 2 }], 'hashtag'],
       [
@@ -232,7 +232,8 @@ describe('detectFacets', () => {
         [
           { byteStart: 0, byteEnd: 2 },
           { byteStart: 3, byteEnd: 5 },
-        ], 'hashtag'
+        ],
+        'hashtag',
       ],
       ['#1', [], [], 'hashtag'],
       ['#1a', ['1a'], [{ byteStart: 0, byteEnd: 3 }], 'hashtag'],
@@ -250,30 +251,40 @@ describe('detectFacets', () => {
       [
         'body #thisisa64characterstring_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
         ['thisisa64characterstring_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'],
-        [{ byteStart: 5, byteEnd: 70 }], 'hashtag',
+        [{ byteStart: 5, byteEnd: 70 }],
+        'hashtag',
       ],
       [
         'body #thisisa65characterstring_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab',
         [],
-        [], 'hashtag',
+        [],
+        'hashtag',
       ],
       [
         'body #thisisa64characterstring_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa!',
         ['thisisa64characterstring_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'],
-        [{ byteStart: 5, byteEnd: 70 }], 'hashtag',
+        [{ byteStart: 5, byteEnd: 70 }],
+        'hashtag',
       ],
       [
         'its a #double#rainbow',
         ['double#rainbow'],
-        [{ byteStart: 6, byteEnd: 21 }], 'hashtag',
+        [{ byteStart: 6, byteEnd: 21 }],
+        'hashtag',
       ],
       ['##hashash', ['#hashash'], [{ byteStart: 0, byteEnd: 9 }], 'hashtag'],
       ['##', [], [], 'hashtag'],
-      ['some #n0n3s@n5e!', ['n0n3s@n5e'], [{ byteStart: 5, byteEnd: 15 }], 'hashtag'],
+      [
+        'some #n0n3s@n5e!',
+        ['n0n3s@n5e'],
+        [{ byteStart: 5, byteEnd: 15 }],
+        'hashtag',
+      ],
       [
         'works #with,punctuation',
         ['with,punctuation'],
-        [{ byteStart: 6, byteEnd: 23 }], 'hashtag',
+        [{ byteStart: 6, byteEnd: 23 }],
+        'hashtag',
       ],
       [
         'strips trailing #punctuation, #like. #this!',
@@ -282,12 +293,14 @@ describe('detectFacets', () => {
           { byteStart: 16, byteEnd: 28 },
           { byteStart: 30, byteEnd: 35 },
           { byteStart: 37, byteEnd: 42 },
-        ], 'hashtag',
+        ],
+        'hashtag',
       ],
       [
         'strips #multi_trailing___...',
         ['multi_trailing'],
-        [{ byteStart: 7, byteEnd: 22 }], 'hashtag',
+        [{ byteStart: 7, byteEnd: 22 }],
+        'hashtag',
       ],
       [
         'works with #🦋 emoji, and #butter🦋fly',
@@ -295,7 +308,8 @@ describe('detectFacets', () => {
         [
           { byteStart: 11, byteEnd: 16 },
           { byteStart: 28, byteEnd: 42 },
-        ], 'hashtag',
+        ],
+        'hashtag',
       ],
       [
         '#same #same #but #diff',
@@ -305,7 +319,8 @@ describe('detectFacets', () => {
           { byteStart: 6, byteEnd: 11 },
           { byteStart: 12, byteEnd: 16 },
           { byteStart: 17, byteEnd: 22 },
-        ], 'hashtag',
+        ],
+        'hashtag',
       ],
       ['this #️⃣tag should not be a tag', [], [], 'hashtag'],
       [
@@ -316,7 +331,8 @@ describe('detectFacets', () => {
             byteStart: 5,
             byteEnd: 16,
           },
-        ], 'hashtag',
+        ],
+        'hashtag',
       ],
       [
         'this #t\nag should be a tag',
@@ -326,23 +342,41 @@ describe('detectFacets', () => {
             byteStart: 5,
             byteEnd: 7,
           },
-        ], 'hashtag',
+        ],
+        'hashtag',
       ],
       ['no match (\\u200B): #​', [], [], 'hashtag'],
       ['no match (\\u200Ba): #​a', [], [], 'hashtag'],
-      ['match (a\\u200Bb): #a​b', ['a'], [{ byteStart: 18, byteEnd: 20 }], 'hashtag'],
-      ['match (ab\\u200B): #ab​', ['ab'], [{ byteStart: 18, byteEnd: 21 }], 'hashtag'],
+      [
+        'match (a\\u200Bb): #a​b',
+        ['a'],
+        [{ byteStart: 18, byteEnd: 20 }],
+        'hashtag',
+      ],
+      [
+        'match (ab\\u200B): #ab​',
+        ['ab'],
+        [{ byteStart: 18, byteEnd: 21 }],
+        'hashtag',
+      ],
       ['no match (\\u20e2tag): #⃢tag', [], [], 'hashtag'],
-      ['no match (a\\u20e2b): #a⃢b', ['a'], [{ byteStart: 21, byteEnd: 23 }], 'hashtag'],
+      [
+        'no match (a\\u20e2b): #a⃢b',
+        ['a'],
+        [{ byteStart: 21, byteEnd: 23 }],
+        'hashtag',
+      ],
       [
         'match full width number sign (tag): ＃tag',
         ['tag'],
-        [{ byteStart: 36, byteEnd: 42 }], 'hashtag',
+        [{ byteStart: 36, byteEnd: 42 }],
+        'hashtag',
       ],
       [
         'match full width number sign (tag): ＃#️⃣tag',
         ['#️⃣tag'],
-        [{ byteStart: 36, byteEnd: 49 }], 'hashtag',
+        [{ byteStart: 36, byteEnd: 49 }],
+        'hashtag',
       ],
       ['no match 1?: #1?', [], [], 'hashtag'],
       ['$1', [], [], 'cashtag'],
@@ -352,7 +386,7 @@ describe('detectFacets', () => {
     ]
 
     it.each(inputs)('%s', async (input, tags, indices, tagType) => {
-      const rt = new RichText({ text: input}, {allowCashtags: true})
+      const rt = new RichText({ text: input })
       await rt.detectFacets(agent)
 
       const detectedTags: string[] = []

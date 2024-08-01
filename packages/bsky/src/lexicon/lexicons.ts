@@ -8671,12 +8671,17 @@ export const schemaDict = {
         type: 'object',
         description:
           "Facet feature for a hashtag. The text usually includes a '#' prefix, but the facet reference should not (except in the case of 'double hash tags').",
-        required: ['tag'],
+        required: ['tag', 'tagType'],
         properties: {
           tag: {
             type: 'string',
             maxLength: 640,
             maxGraphemes: 64,
+          },
+          tagType: {
+            type: 'string',
+            enum: ['hashtag', 'cashtag'],
+            default: 'hashtag',
           },
         },
       },
